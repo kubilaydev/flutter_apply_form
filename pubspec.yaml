@@ -1,0 +1,36 @@
+name: flutter_apply_form
+description: A new Flutter project.
+publish_to: 'none' 
+
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  intl: ^0.17.0
+  dotted_border: ^2.0.0+1
+
+  
+
+dev_dependencies:
+  effective_dart: any
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+   # YOU CAN GROUP YOUR ASSETS IN THIS FOLDERS
+  assets:
+    - assets/asset_folder1/
+    - assets/asset_folder2/
+    
+   # THIS IS MY FAVORITE FONTS, ITs A GIFT FOR YOU 
+  fonts:
+      - family: SourseSansPro
+        fonts:
+          - asset: fonts/SourceSansPro-Light.ttf
+          - asset: fonts/SourceSansPro-Regular.ttf
