@@ -11,17 +11,17 @@ ThemeData appTheme() {
           fontSize: 28,
           color: const Color(0XFF4A4A4A),
           fontFamily: 'SourseSansPro',
-          fontWeight: FontWeight.w600),
+          fontWeight: FontWeight.w700),
       headline2: base.headline2!.copyWith(
           fontSize: 20,
           color: const Color(0XFF4A4A4A),
           fontFamily: 'SourseSansPro',
-          fontWeight: FontWeight.w600),
+          fontWeight: FontWeight.w700),
       subtitle1: base.subtitle1!.copyWith(
-          fontSize: 22,
-          color: const Color(0XFF4A4A4A),
+          fontSize: 14,
+          //color: const Color(0XFF4A4A4A),
           fontFamily: 'SourseSansPro',
-          fontWeight: FontWeight.w400),
+          fontWeight: FontWeight.w500),
       button: base.button!.copyWith(
           fontSize: 28,
           color: Colors.white,

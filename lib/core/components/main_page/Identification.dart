@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'dotted_border.dart';
 import 'filter_box.dart';
+import 'image_picker_widget.dart';
 
 ///
 class Identification extends StatefulWidget {
@@ -43,14 +43,6 @@ class _IdentificationState extends State<Identification>
   ///
   TabController? _licenseController;
 
-  ///
-
-  ///
-
-  double _dottedBoxSize() {
-    return MediaQuery.of(context).size.width / 2 - 40;
-  }
-
   final double cornerRadius = 10.0;
 
   late AnimationController controller;
@@ -59,14 +51,12 @@ class _IdentificationState extends State<Identification>
   @override
   void initState() {
     super.initState();
-
     _licenseController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
     _licenseController!.dispose();
-
     super.dispose();
   }
 
@@ -75,9 +65,11 @@ class _IdentificationState extends State<Identification>
 
   @override
   Widget build(BuildContext context) {
-    var _licenceBirthDate = DateTime.now().subtract(const Duration(days: 8640));
-    var _passportBirthDate =
-        DateTime.now().subtract(const Duration(days: 8640));
+    ///
+    var _licenceBirthDate = DateTime.now();
+
+    ///
+    var _passportBirthDate = DateTime.now();
 
     ///
     var _licenceGender = 1;
@@ -96,22 +88,22 @@ class _IdentificationState extends State<Identification>
                 height: 8,
               ),
 
-              const Align(
+              Align(
                 alignment: Alignment.topLeft,
                 child: Text(
                   "Identification",
-                  style: TextStyle(fontSize: 23, fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.headline1,
                 ),
               ),
 
               const SizedBox(
                 height: 16,
               ),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Driver License',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.headline2,
                 ),
               ),
               const SizedBox(
@@ -120,7 +112,40 @@ class _IdentificationState extends State<Identification>
               Container(
                 color: const Color(0XFFF2F2F2),
                 height: 32,
-                child: buildTabBar(),
+                child: TabBar(
+                    onTap: (context) {
+                      setState(() {});
+                    },
+                    controller: _licenseController,
+                    indicatorColor: Colors.grey,
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.black54,
+                    indicator: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(2), // Creates border
+                        color: Theme.of(context).primaryColor),
+                    tabs: const [
+                      Tab(
+                        icon: Text(
+                          "Manually",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'SourseSansPro',
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        icon: Text(
+                          "Photo",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'SourseSansPro',
+                          ),
+                        ),
+                      ),
+                    ]),
               ),
               //? TABS
               AnimatedContainer(
@@ -150,8 +175,106 @@ class _IdentificationState extends State<Identification>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               //? START
-                              buildBirthDateGesture(_licenceBirthDate),
-                              genderGetterBuilder(_licenceGender),
+                              GestureDetector(
+                                onTap: () {
+                                  showCupertinoModalPopup(
+                                      context: context,
+                                      builder: (_) => Container(
+                                            height: 190,
+                                            color: const Color.fromARGB(
+                                                255, 255, 255, 255),
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  height: 180,
+                                                  child: CupertinoDatePicker(
+                                                      mode:
+                                                          CupertinoDatePickerMode
+                                                              .date,
+                                                      use24hFormat: true,
+                                                      minimumDate: DateTime
+                                                              .now()
+                                                          .subtract(
+                                                              const Duration(
+                                                                  days: 38400)),
+                                                      initialDateTime:
+                                                          _licenceBirthDate,
+                                                      onDateTimeChanged: (val) {
+                                                        setState(() {
+                                                          _licenceBirthDate =
+                                                              val;
+                                                        });
+                                                        print(
+                                                            _licenceBirthDate);
+                                                      }),
+                                                ),
+                                              ],
+                                            ),
+                                          ));
+                                },
+                                child: FilterBox(
+                                  title: 'Birthday',
+                                  content: DateFormat('d MMM yy', 'en_US')
+                                      .format(_licenceBirthDate)
+                                      .toString(),
+                                  titleIcon: Icons.calendar_today_outlined,
+                                  iconColor: Colors.black87,
+                                ),
+                              ),
+                              Stack(
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12),
+                                      margin: const EdgeInsets.only(
+                                        top: 18,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        // color: Colors.red,
+                                        border: Border.all(
+                                          width: 2,
+                                          color: const Color(0XFFE5E5E5),
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton<int>(
+                                            value: _licenceGender,
+                                            onChanged: (g) {
+                                              setState(() {
+                                                _licenceGender = g!;
+                                              });
+                                              print(_licenceGender);
+                                            },
+                                            // ignore: prefer_const_literals_to_create_immutables
+                                            items: const [
+                                              DropdownMenuItem(
+                                                child: Text('Male'),
+                                                value: 1,
+                                              ),
+                                              DropdownMenuItem(
+                                                child: Text('Female'),
+                                                value: 2,
+                                              ),
+                                            ]),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 8,
+                                    left: 14,
+                                    child: Container(
+                                      color: Colors.white,
+                                      padding: const EdgeInsets.all(2),
+                                      child: const Text(
+                                        'Gender',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
                               //? FINISH
                             ],
                           ),
@@ -178,9 +301,9 @@ class _IdentificationState extends State<Identification>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               //? LICENSE FRONT
-                              buildImagePicker(),
+                              ImagePickerWidget(),
                               //? LICENSE BACK
-                              buildImagePicker(),
+                              ImagePickerWidget(),
                             ],
                           ),
                           const SizedBox(
@@ -192,11 +315,11 @@ class _IdentificationState extends State<Identification>
                   ],
                 ),
               ),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Passport",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.headline2,
                 ),
               ),
               const SizedBox(
@@ -205,7 +328,40 @@ class _IdentificationState extends State<Identification>
               Container(
                 color: const Color(0XFFF2F2F2),
                 height: 32,
-                child: buildTabBar(),
+                child: TabBar(
+                    onTap: (context) {
+                      setState(() {});
+                    },
+                    controller: _licenseController,
+                    indicatorColor: Colors.grey,
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.black54,
+                    indicator: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(2), // Creates border
+                        color: Theme.of(context).primaryColor),
+                    tabs: const [
+                      Tab(
+                        icon: Text(
+                          "Manually",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'SourseSansPro',
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        icon: Text(
+                          "Photo",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'SourseSansPro',
+                          ),
+                        ),
+                      ),
+                    ]),
               ),
               //? TABS
               Container(
@@ -232,8 +388,104 @@ class _IdentificationState extends State<Identification>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             //? START
-                            buildBirthDateGesture(_passportBirthDate),
-                            genderGetterBuilder(_passportGender),
+                            GestureDetector(
+                              onTap: () {
+                                showCupertinoModalPopup(
+                                    context: context,
+                                    builder: (_) => Container(
+                                          height: 190,
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 180,
+                                                child: CupertinoDatePicker(
+                                                    mode:
+                                                        CupertinoDatePickerMode
+                                                            .date,
+                                                    use24hFormat: true,
+                                                    minimumDate: DateTime.now()
+                                                        .subtract(
+                                                            const Duration(
+                                                                days: 38400)),
+                                                    initialDateTime:
+                                                        _passportBirthDate,
+                                                    onDateTimeChanged: (val) {
+                                                      setState(() {
+                                                        _passportBirthDate =
+                                                            val;
+                                                      });
+                                                      print(_passportBirthDate);
+                                                    }),
+                                              ),
+                                            ],
+                                          ),
+                                        ));
+                              },
+                              child: FilterBox(
+                                title: 'Birthday',
+                                content: DateFormat('d MMM yy', 'en_US')
+                                    .format(_passportBirthDate)
+                                    .toString(),
+                                titleIcon: Icons.calendar_today_outlined,
+                                iconColor: Colors.black87,
+                              ),
+                            ),
+                            Stack(
+                              children: [
+                                Center(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    margin: const EdgeInsets.only(
+                                      top: 18,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      // color: Colors.red,
+                                      border: Border.all(
+                                        width: 2,
+                                        color: const Color(0XFFE5E5E5),
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<int>(
+                                          value: _passportGender,
+                                          onChanged: (g) {
+                                            setState(() {
+                                              _passportGender = g!;
+                                            });
+                                            print(_passportGender);
+                                          },
+                                          // ignore: prefer_const_literals_to_create_immutables
+                                          items: const [
+                                            DropdownMenuItem(
+                                              child: Text('Male'),
+                                              value: 1,
+                                            ),
+                                            DropdownMenuItem(
+                                              child: Text('Female'),
+                                              value: 2,
+                                            ),
+                                          ]),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 8,
+                                  left: 14,
+                                  child: Container(
+                                    color: Colors.white,
+                                    padding: const EdgeInsets.all(2),
+                                    child: const Text(
+                                      'Gender',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
                             //? FINISH
                           ],
                         ),
@@ -255,9 +507,9 @@ class _IdentificationState extends State<Identification>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               //? PASSPORT FRONT
-                              buildImagePicker(),
+                              ImagePickerWidget(),
                               //? LICENSE BACK
-                              buildImagePicker(),
+                              ImagePickerWidget(),
                             ],
                           ),
                           const SizedBox(
@@ -272,74 +524,6 @@ class _IdentificationState extends State<Identification>
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget genderGetterBuilder(int gender) {
-    return Stack(
-      children: [
-        Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            margin: const EdgeInsets.only(
-              top: 18,
-            ),
-            decoration: BoxDecoration(
-              // color: Colors.red,
-              border: Border.all(
-                width: 2,
-                color: const Color(0XFFE5E5E5),
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<int>(
-                  value: gender,
-                  onChanged: (g) {
-                    setState(() {
-                      gender = g!;
-                    });
-                    print(gender);
-                  },
-                  // ignore: prefer_const_literals_to_create_immutables
-                  items: const [
-                    DropdownMenuItem(
-                      child: Text('Male'),
-                      value: 1,
-                    ),
-                    DropdownMenuItem(
-                      child: Text('Female'),
-                      value: 2,
-                    ),
-                  ]),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 8,
-          left: 14,
-          child: Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(2),
-            child: const Text(
-              'Gender',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget buildBirthDateGesture(DateTime birthDate) {
-    return GestureDetector(
-      onTap: () => _startDateTimePicker(context, birthDate),
-      child: FilterBox(
-        title: 'Birthday',
-        content: DateFormat('d MMM yy', 'en_US').format(birthDate).toString(),
-        titleIcon: Icons.calendar_today_outlined,
-        iconColor: Colors.black87,
       ),
     );
   }
@@ -374,105 +558,4 @@ class _IdentificationState extends State<Identification>
   }
 
   // ignore: avoid_positional_boolean_parameters
-  Widget buildImagePicker() {
-    return GestureDetector(
-      onTap: () {},
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DottedBorderBox(
-            child: Container(
-              height: _dottedBoxSize(),
-              width: _dottedBoxSize(),
-              child: const Icon(
-                Icons.add_a_photo,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          GestureDetector(
-            onTap: () {},
-            child: Row(
-              children: const [
-                Icon(
-                  Icons.file_upload_sharp,
-                  color: Colors.grey,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  // ignore: lines_longer_than_80_chars
-                  'front',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  TabBar buildTabBar() {
-    return TabBar(
-        onTap: (context) {
-          setState(() {});
-        },
-        controller: _licenseController,
-        indicatorColor: Colors.grey,
-        labelColor: Colors.white,
-        unselectedLabelColor: Colors.black54,
-        indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(2), // Creates border
-            color: Theme.of(context).primaryColor),
-        tabs: const [
-          Tab(
-            icon: Text(
-              "Manually",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          ),
-          Tab(
-            icon: Text(
-              "Photo",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          ),
-        ]);
-  }
-
-  void _startDateTimePicker(context, birthDate) {
-    showCupertinoModalPopup(
-        context: context,
-        builder: (_) => Container(
-              height: 190,
-              color: const Color.fromARGB(255, 255, 255, 255),
-              child: Column(
-                children: [
-                  Container(
-                    height: 180,
-                    child: CupertinoDatePicker(
-                        mode: CupertinoDatePickerMode.date,
-                        use24hFormat: true,
-                        minimumDate: DateTime.now()
-                            .subtract(const Duration(days: 38400)),
-                        initialDateTime: birthDate,
-                        onDateTimeChanged: (val) {
-                          setState(() {
-                            birthDate = val;
-                          });
-                          print(birthDate);
-                        }),
-                  ),
-                ],
-              ),
-            ));
-  }
 }
